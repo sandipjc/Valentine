@@ -35,12 +35,17 @@ h1 {
     margin-bottom: 15px;
 }
 
+h2 {
+    color: #282828e8;
+    margin-bottom: 15px;
+}
+
 /* ========== INPUT ========== */
 .name-input {
     width: 100%;
     padding: 12px;
     border-radius: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #e62f5d;
     font-size: 16px;
     text-align: center;
     margin-bottom: 15px;
@@ -182,9 +187,14 @@ button {
     }
 
     h1 {
-        font-size: 26px;
+        font-size: 150%;
         line-height: 1.3;
     }
+
+    h2 {
+        font-size: 120%;
+    }
+
 
     .name-input {
         font-size: 18px;
@@ -280,19 +290,27 @@ button {
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
 }
+.name-input:focus { 
+    outline: none;
+    border-color: #ff3467;
+    box-shadow: 0 0 10px #ff3467;
+}
+
 </style>
 </head>
 <body>
 
 <!-- ========== MAIN CARD ========== -->
 <div class="card">
-    <h1 id="titleText">Will You Be My Valentine?</h1>
-
+    <h1 id="titleText">Make a Valentine Moment<br/>for Someone You Love</h1>
+    <h2 id="titleSubText">Will You Be My Valentine?</h2>
     <img 
         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh-oB7JLt0axcDw_nJT2aaU-ja5KnS21iyvQ&s"
         style="width:200px;border-radius:20px;margin-bottom:15px;margin: 0 auto;"
         alt="Cute Love"
     />
+    
+    <p id="titleInfoText">Type their name, share the link, and let the magic happen</p>
 
     <div id="nameWrapper">
         <input 
@@ -497,7 +515,8 @@ generateLinkBtn.addEventListener("click", async () => {
     shareLink.value = url;
     shareLink.style.display = "block";
     shareBox.style.display = "block";
-
+    //const titleInfoText = document.getElementById("titleInfoText").style.display = "none";
+    titleInfoText.innerText = `Link copied! You can also tap Share ❤️`;
     try {
         await navigator.clipboard.writeText(url);
         shareBox.innerText = "Link copied! You can also tap Share ❤️";
@@ -517,7 +536,7 @@ nativeShareBtn.addEventListener("click", async () => {
     try {
         await navigator.share({
             title: "Someone made this just for you ❤️",
-            text: "Tap this — I have something special for you 💌",
+            text: "Tap this - I have something special for you 💌",
             url
         });
     } catch (err) {
@@ -541,6 +560,8 @@ function checkPhase() {
         shareLink.style.display = "none";
 
         document.getElementById("nameWrapper").style.display = "none";
+        document.getElementById("titleSubText").style.display = "none";
+        document.getElementById("titleInfoText").style.display = "none";
 
         titleText.innerHTML = `${decoded},<br>Will You Be My Valentine?`;
 
