@@ -1,55 +1,75 @@
-Valentine Link Generator
+# 💘 Valentine Link Generator
 
-Create a personalized Valentine surprise for someone special.
-This project lets you enter a name, generate a shareable link, and send it to your loved one. When they open it, they’ll see their name, play a fun “catch the No” game, and unlock a romantic message.
+Create a **personalized Valentine surprise** for someone special.  
+This project lets you enter a name, generate a **shareable link**, and send it to your loved one. When they open it, they’ll see their name, play a fun **“catch the No” game**, and unlock a romantic message.
 
-✨ Features
-📝 Name Personalization – Enter a name and make the page feel custom-made
+---
 
-🔗 Shareable Link Generator – Creates a URL like: ?name=person-name
+## ✨ Features
 
-📲 Native Share Button – Share directly to WhatsApp, Instagram, Telegram, etc.
+- 📝 **Name Personalization** — Enter a name and make the page feel custom-made  
+- 🔗 **Shareable Link Generator** — Creates a URL like:
+  
+---
 
-🏃 Playful “No” Button – Runs away when you try to click it
+?name=person-name
+- 📲 **Native Share Button** — Share directly to WhatsApp, Instagram, Telegram, etc.  
+- 🏃 **Playful “No” Button** — Runs away when you try to click it  
+- 📱 **Mobile-First / Instagram Story Layout** — Looks great on phones  
+- 💡 **Slug URLs** — Converts names into clean links
 
-📱 Mobile-First / Instagram Story Layout – Looks great on phones
+---
 
-💡 Slug URLs – Converts names into clean links (Person Name → person-name)
+## 🚀 Live Demo
 
-🌍 Public & Free Hosting – Works perfectly on GitHub Pages
+Visit:  https://sandipjc.github.io/Valentine/
 
-  Live Demo - https://sandipjc.github.io/Valentine/
 
-How It Works
-Open the site
-Enter their name
-Click Generate Shareable Link
-Copy or tap Share ❤️
-Send the link
+---
 
-Best Supported Browsers
+## 🛠️ How It Works
 
-This project uses modern web features (clipboard, native share, animations, and vibration), so for the best experience, use:
-✅ Fully Supported
-Google Chrome (Android & Desktop) — Best overall experience
-Microsoft Edge (Desktop & Mobile)
-Samsung Internet (Android)
-Mozilla Firefox (Desktop & Android)
+1. Open the site  
+2. Enter their name  
+3. Click **Generate Shareable Link**  
+4. Copy or tap **Share ❤️**  
+5. Send the link  
 
-⚠️ Partially Supported
-Safari (iPhone / iPad)
+---
 
-Native Share works
-Vibration is not supported (iOS blocks web vibration)
-Audio may require user interaction
+## 🌐 Best Supported Browsers
 
-❌ Not Recommended
-Internet Explorer (Not supported)
-Very old Android browsers
+This project uses modern web features (clipboard, native share, animations, and vibration), so for the **best experience**, use:
 
-📱 Mobile Experience Note
-For the Instagram Story–style, full-screen experience, open the link in:
-Chrome (Android)
-Safari (iOS)
+### ✅ Fully Supported
+- **Google Chrome (Android & Desktop)** — Best overall experience  
+- **Microsoft Edge (Desktop & Mobile)**  
+- **Samsung Internet (Android)**  
+- **Mozilla Firefox (Desktop & Android)**  
+
+### ⚠️ Partially Supported
+- **Safari (iPhone / iPad)**  
+  - Native Share works  
+  - Vibration is not supported (iOS blocks web vibration)  
+  - Audio may require user interaction  
+
+### ❌ Not Recommended
+- **Internet Explorer** (Not supported)  
+- Very old Android browsers  
+
+---
+
+## 📱 Mobile Experience Note
+
+For the **Instagram Story–style, full-screen experience**, open the link in:
+- Chrome (Android)  
+- Safari (iOS)  
 
 Some in-app browsers (Instagram, Facebook) may limit sound, vibration, or native sharing features.
+
+---
+
+## ❤️ Made for Fun & Love
+
+This project is meant for **creativity, learning, and spreading smiles**.  
+Feel free to fork it, customize it, and make your own romantic version.
