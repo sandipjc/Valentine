@@ -33,13 +33,3 @@ Click Generate Shareable Link
 Copy or tap Share ❤️
 
 Send the link
-
-Phase 2 — Proposal Mode (Them)
-
-They open the link
-
-See their name in the title
-
-Try to click No (it runs 😏)
-
-Click Yes → Confetti + romantic message 💘
