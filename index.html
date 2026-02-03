@@ -241,6 +241,45 @@ button {
         margin-top: 8px;
     }
 }
+/* Share buttons layout */
+.share-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .share-actions {
+        flex-direction: column;
+    }
+
+    .share-actions button {
+        width: 100%;
+    }
+}
+#nativeShareBtn {
+    background: #ff3366;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1;
+    height: 40px; /* matches generate button height visually */
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
 </style>
 </head>
 <body>
@@ -266,7 +305,19 @@ button {
     </div>
 
     <!-- PHASE 1: GENERATE LINK -->
-    <button id="generateLinkBtn">Generate Shareable Link</button>
+    <div class="share-actions">
+        <button id="generateLinkBtn">Generate Shareable Link</button>
+        <button
+        id="nativeShareBtn"
+        class="share-actions"
+        style="
+            display:none;
+        "
+    >
+        Share
+    </button>
+    </div>
+       
 
     <p id="shareBox">Link ready! Copy & send it to her ❤️</p>
     <input id="shareLink" readonly />
@@ -292,6 +343,7 @@ const generateLinkBtn = document.getElementById("generateLinkBtn");
 const shareBox = document.getElementById("shareBox");
 const shareLink = document.getElementById("shareLink");
 const titleText = document.getElementById("titleText");
+const nativeShareBtn = document.getElementById("nativeShareBtn");
 
 /* ========== PHYSICS VALUES ========== */
 let pos = { x: 0, y: 0 };
@@ -447,17 +499,31 @@ generateLinkBtn.addEventListener("click", async () => {
     shareBox.style.display = "block";
 
     try {
-        // Modern clipboard API
         await navigator.clipboard.writeText(url);
-        shareBox.innerText = "Link copied! Send it to her 💌";
-    } catch (err) {
-        // Fallback for older browsers
-        shareLink.select();
-        document.execCommand("copy");
-        shareBox.innerText = "Copied! If not, long-press the link above ❤️";
+        shareBox.innerText = "Link copied! You can also tap Share ❤️";
+    } catch {
+        shareBox.innerText = "Long-press the link to copy ❤️";
+    }
+
+    // Show native share if supported
+    if (navigator.share) {
+        nativeShareBtn.style.display = "inline-block";
     }
 });
+nativeShareBtn.addEventListener("click", async () => {
+    const url = shareLink.value;
+    if (!url) return;
 
+    try {
+        await navigator.share({
+            title: "Someone made this just for you ❤️",
+            text: "Tap this — I have something special for you 💌",
+            url
+        });
+    } catch (err) {
+        // User cancelled or browser blocked
+    }
+});
 /* ========== PHASE 2: CHECK SHARED LINK ========== */
 function checkPhase() {
     const params = new URLSearchParams(window.location.search);
@@ -476,7 +542,7 @@ function checkPhase() {
 
         document.getElementById("nameWrapper").style.display = "none";
 
-        titleText.innerText = `${decoded}, Will You Be My Valentine?`;
+        titleText.innerHTML = `${decoded},<br>Will You Be My Valentine?`;
 
         document.querySelector(".buttons").style.display = "flex";
     }
