@@ -416,8 +416,6 @@ function repel(e) {
     vel.x += (dx / dist) * force * speed;
     vel.y += (dy / dist) * force * speed;
 
-    //  Tiny vibration on escape Android
-    vibrateTiny();
     //  sound on escape Android
     playEscapeSound();
 }
@@ -426,6 +424,7 @@ function repel(e) {
 document.addEventListener("mousemove", repel);
 noBtn.addEventListener("touchstart", e => {
     e.preventDefault();
+    vibrateTiny();        // 📳 User gesture = vibration allowed
     repel(e.touches[0]);
 });
 noBtn.addEventListener("click", repel);
