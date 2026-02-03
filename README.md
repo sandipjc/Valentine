@@ -20,3 +20,26 @@ This project lets you enter a name, generate a shareable link, and send it to yo
 🌍 Public & Free Hosting – Works perfectly on GitHub Pages
 
   Live Demo - https://sandipjc.github.io/Valentine/
+
+  How It Works
+Phase 1 — Builder Mode (You)
+
+Open the site
+
+Enter their name
+
+Click Generate Shareable Link
+
+Copy or tap Share ❤️
+
+Send the link
+
+Phase 2 — Proposal Mode (Them)
+
+They open the link
+
+See their name in the title
+
+Try to click No (it runs 😏)
+
+Click Yes → Confetti + romantic message 💘
