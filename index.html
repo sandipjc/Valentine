@@ -317,6 +317,48 @@ function fromSlug(slug) {
         .replace(/\b\w/g, c => c.toUpperCase());
 }
 
+function vibrateTiny() {
+    const isAndroid = /Android/i.test(navigator.userAgent);
+
+    if (isAndroid && "vibrate" in navigator) {
+        navigator.vibrate([20, 30, 20]);
+    }
+}
+const escapeSound = document.getElementById("escapeSound");
+
+function playEscapeSound() {
+    if (!escapeSound) return;
+    escapeSound.currentTime = 0;
+    escapeSound.volume = 0.3;
+    escapeSound.play().catch(() => {});
+}
+
+function launchConfetti() {
+    for (let i = 0; i < 80; i++) {
+        const conf = document.createElement("div");
+        conf.style.position = "fixed";
+        conf.style.width = "8px";
+        conf.style.height = "8px";
+        conf.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.top = "-10px";
+        conf.style.borderRadius = "50%";
+        conf.style.pointerEvents = "none";
+        conf.style.zIndex = "9999";
+
+        document.body.appendChild(conf);
+
+        const fall = conf.animate([
+            { transform: "translateY(0)" },
+            { transform: `translateY(${window.innerHeight + 20}px)` }
+        ], {
+            duration: 2000 + Math.random() * 1000,
+            easing: "ease-out"
+        });
+
+        fall.onfinish = () => conf.remove();
+    }
+}
 /* ========== PLACE NO NEXT TO YES ========== */
 function placeNo() {
     const r = anchor.getBoundingClientRect();
@@ -373,6 +415,11 @@ function repel(e) {
 
     vel.x += (dx / dist) * force * speed;
     vel.y += (dy / dist) * force * speed;
+
+    //  Tiny vibration on escape Android
+    vibrateTiny();
+    //  sound on escape Android
+    playEscapeSound();
 }
 
 /* ========== EVENTS ========== */
@@ -429,6 +476,7 @@ function checkPhase() {
 
 /* ========== YES SCREEN ========== */
 function showLove() {
+    launchConfetti();
     const rawName = nameInput.value.trim();
     const name = rawName ? fromSlug(toSlug(rawName)) : "My Love";
 
@@ -472,6 +520,8 @@ window.addEventListener("load", () => {
 
 window.addEventListener("resize", placeNo);
 </script>
-
+<audio id="escapeSound" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.wav" type="audio/wav">
+  </audio>
 </body>
 </html>
