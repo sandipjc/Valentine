@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Be My Valentine</title>
+<style>
+/* ========== BASE STYLES ========== */
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff5f6d, #ffc371);
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    position: relative;
+    z-index: 5;
+    min-width: 320px;
+}
+
+h1 {
+    color: #ff3366;
+    margin-bottom: 15px;
+}
+
+/* ========== INPUT ========== */
+.name-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 15px;
+    outline: none;
+}
+
+/* ========== BUTTONS ========== */
+.buttons {
+    display: none; /* hidden until proposal mode */
+    justify-content: center;
+    gap: 20px;
+    position: relative;
+}
+
+button {
+    padding: 14px 28px;
+    font-size: 18px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+/* YES BUTTON */
+#yesBtn {
+    background: #ff3366;
+    color: white;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0.5;
+}
+
+#yesBtn.enabled {
+    opacity: 1;
+}
+
+#yesBtn.enabled:hover {
+    transform: scale(1.1);
+}
+
+/* NO BUTTON (floating) */
+#noBtn {
+    background: #ddd;
+    color: black;
+    position: fixed;
+    z-index: 999;
+}
+
+/* ========== LINK GENERATOR UI ========== */
+#generateLinkBtn {
+    background: #fff;
+    border: 1px dashed #ff3366;
+    color: #ff3366;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+#shareBox {
+    display: none;
+    font-size: 14px;
+    color: #555;
+}
+
+#shareLink {
+    display: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* ========== SPARKLES ========== */
+.sparkle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: float 6s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes float {
+    from {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(-10vh);
+        opacity: 1;
+    }
+}
+
+/* ========== LOVE SCREEN ========== */
+.love-screen {
+    background: white;
+    padding: 40px;
+    border-radius: 25px;
+    text-align: center;
+    max-width: 420px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.love-screen h1 {
+    color: #ff3366;
+    margin-bottom: 10px;
+}
+
+.love-screen p {
+    color: #555;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.love-screen img {
+    width: 300px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+</style>
+</head>
+<body>
+
+<!-- ========== MAIN CARD ========== -->
+<div class="card">
+    <h1 id="titleText">Will You Be My Valentine?</h1>
+
+    <img 
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh-oB7JLt0axcDw_nJT2aaU-ja5KnS21iyvQ&s"
+        style="width:200px; border-radius:20px; margin-bottom:15px;"
+        alt="Cute Love"
+    />
+
+    <div id="nameWrapper">
+        <input 
+            type="text" 
+            id="girlName" 
+            class="name-input" 
+            placeholder="Enter her name here..."
+            autocomplete="off"
+        />
+    </div>
+
+    <!-- PHASE 1: GENERATE LINK -->
+    <button id="generateLinkBtn">Generate Shareable Link</button>
+
+    <p id="shareBox">Link ready! Copy & send it to her ❤️</p>
+    <input id="shareLink" readonly />
+
+    <!-- PHASE 2: GAME BUTTONS -->
+    <div class="buttons">
+        <button id="yesBtn" disabled>Yes</button>
+        <span id="noAnchor" style="width:120px;"></span>
+        <!-- Floating NO -->
+        <button id="noBtn">No</button>
+    </div>
+</div>
+
+
+<script>
+/* ========== ELEMENTS ========== */
+const noBtn = document.getElementById("noBtn");
+const anchor = document.getElementById("noAnchor");
+const yesBtn = document.getElementById("yesBtn");
+const nameInput = document.getElementById("girlName");
+
+const generateLinkBtn = document.getElementById("generateLinkBtn");
+const shareBox = document.getElementById("shareBox");
+const shareLink = document.getElementById("shareLink");
+const titleText = document.getElementById("titleText");
+
+/* ========== PHYSICS VALUES ========== */
+let pos = { x: 0, y: 0 };
+let vel = { x: 0, y: 0 };
+
+const speed = 0.18;
+const friction = 0.85;
+const SAFE_RADIUS = 180;
+const EDGE_PADDING = 40;
+
+/* ========== HELPERS ========== */
+function toSlug(str) {
+    return str
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
+}
+
+function fromSlug(slug) {
+    return slug
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/* ========== PLACE NO NEXT TO YES ========== */
+function placeNo() {
+    const r = anchor.getBoundingClientRect();
+    pos.x = r.left + 10;
+    pos.y = r.top;
+    updatePosition();
+}
+
+function updatePosition() {
+    noBtn.style.left = pos.x + "px";
+    noBtn.style.top = pos.y + "px";
+}
+
+/* ========== ANIMATION LOOP ========== */
+function animate() {
+    pos.x += vel.x;
+    pos.y += vel.y;
+
+    vel.x *= friction;
+    vel.y *= friction;
+
+    const w = noBtn.offsetWidth;
+    const h = noBtn.offsetHeight;
+
+    const minX = EDGE_PADDING;
+    const minY = EDGE_PADDING;
+    const maxX = window.innerWidth - w - EDGE_PADDING;
+    const maxY = window.innerHeight - h - EDGE_PADDING;
+
+    if (pos.x <= minX || pos.x >= maxX) vel.x *= -1;
+    if (pos.y <= minY || pos.y >= maxY) vel.y *= -1;
+
+    pos.x = Math.max(minX, Math.min(maxX, pos.x));
+    pos.y = Math.max(minY, Math.min(maxY, pos.y));
+
+    updatePosition();
+    requestAnimationFrame(animate);
+}
+
+/* ========== REPEL LOGIC ========== */
+function repel(e) {
+    const rect = noBtn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const dx = cx - e.clientX;
+    const dy = cy - e.clientY;
+
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    if (dist > SAFE_RADIUS) return;
+
+    const force = Math.min(30, (SAFE_RADIUS / dist) * 6);
+
+    vel.x += (dx / dist) * force * speed;
+    vel.y += (dy / dist) * force * speed;
+}
+
+/* ========== EVENTS ========== */
+document.addEventListener("mousemove", repel);
+noBtn.addEventListener("touchstart", e => repel(e.touches[0]));
+noBtn.addEventListener("click", repel);
+
+/* ========== PHASE 1: GENERATE LINK ========== */
+generateLinkBtn.addEventListener("click", () => {
+    const name = nameInput.value.trim();
+    if (!name) {
+        alert("Enter her name first ❤️");
+        return;
+    }
+
+    const slug = toSlug(name);
+    const baseURL = window.location.origin + window.location.pathname;
+    const url = `${baseURL}?name=${slug}`;
+
+    shareLink.value = url;
+    shareLink.style.display = "block";
+    shareBox.style.display = "block";
+
+    navigator.clipboard.writeText(url);
+    shareBox.innerText = "Link copied! Send it to her 💌";
+});
+
+/* ========== PHASE 2: CHECK SHARED LINK ========== */
+function checkPhase() {
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name");
+
+    if (name) {
+        const decoded = fromSlug(name);
+
+        nameInput.value = decoded;
+        yesBtn.disabled = false;
+        yesBtn.classList.add("enabled");
+
+        generateLinkBtn.style.display = "none";
+        shareBox.style.display = "none";
+        shareLink.style.display = "none";
+
+        document.getElementById("nameWrapper").style.display = "none";
+
+        titleText.innerText = `${decoded}, Will You Be My Valentine?`;
+
+        document.querySelector(".buttons").style.display = "flex";
+    }
+}
+
+/* ========== YES SCREEN ========== */
+function showLove() {
+    const rawName = nameInput.value.trim();
+    const name = rawName ? fromSlug(toSlug(rawName)) : "My Love";
+
+    document.body.innerHTML = `
+        <div class="love-screen">
+            <h1>${name}, This Is Our Beginning</h1>
+            <p>
+                Some moments change days.  
+                Some choices change lives.  
+                And the moment you clicked “Yes” — you changed mine forever.
+            </p>
+            <p>
+                From today, it’s not just me and you — it’s us, always.
+            </p>
+            <img src="https://i.pinimg.com/736x/84/e4/41/84e441da2d9116813141b6be0f99b6ab.jpg" alt="Romantic Moment">
+        </div>
+    `;
+}
+
+/* ========== SPARKLES ========== */
+function createSparkle() {
+    const s = document.createElement("div");
+    s.classList.add("sparkle");
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.animationDuration = Math.random() * 3 + 4 + "s";
+    document.body.appendChild(s);
+
+    setTimeout(() => s.remove(), 6000);
+}
+
+setInterval(createSparkle, 400);
+
+/* ========== INIT ========== */
+yesBtn.addEventListener("click", showLove);
+
+window.addEventListener("load", () => {
+    checkPhase();
+    placeNo();
+    animate();
+});
+
+window.addEventListener("resize", placeNo);
+</script>
+
+</body>
+</html>
