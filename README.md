@@ -22,7 +22,6 @@ This project lets you enter a name, generate a shareable link, and send it to yo
   Live Demo - https://sandipjc.github.io/Valentine/
 
   How It Works
-Phase 1 — Builder Mode (You)
 
 Open the site
 
