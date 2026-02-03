@@ -430,7 +430,7 @@ noBtn.addEventListener("touchstart", e => {
 noBtn.addEventListener("click", repel);
 
 /* ========== PHASE 1: GENERATE LINK ========== */
-generateLinkBtn.addEventListener("click", () => {
+generateLinkBtn.addEventListener("click", async () => {
     const name = nameInput.value.trim();
     if (!name) {
         alert("Enter her name first ❤️");
@@ -441,12 +441,21 @@ generateLinkBtn.addEventListener("click", () => {
     const baseURL = window.location.origin + window.location.pathname;
     const url = `${baseURL}?name=${slug}`;
 
+    // Show it on screen
     shareLink.value = url;
     shareLink.style.display = "block";
     shareBox.style.display = "block";
 
-    navigator.clipboard.writeText(url);
-    shareBox.innerText = "Link copied! Send it to her 💌";
+    try {
+        // Modern clipboard API
+        await navigator.clipboard.writeText(url);
+        shareBox.innerText = "Link copied! Send it to her 💌";
+    } catch (err) {
+        // Fallback for older browsers
+        shareLink.select();
+        document.execCommand("copy");
+        shareBox.innerText = "Copied! If not, long-press the link above ❤️";
+    }
 });
 
 /* ========== PHASE 2: CHECK SHARED LINK ========== */
