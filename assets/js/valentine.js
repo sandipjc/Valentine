@@ -219,7 +219,7 @@ function checkPhase() {
     }
 }
 function getShareText(name) {
-  return `${name} said YES ❤️\nSome moments deserve to be shared.`;
+  return `${name} said YES :)\nSome moments deserve to be shared.`;
 }
 /* ========== YES SCREEN ========== */
 /* ========== YES SCREEN ========== */
