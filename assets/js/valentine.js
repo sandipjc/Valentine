@@ -1,6 +1,7 @@
 
 
 /* ========== ELEMENTS ========== */
+let noAttemptCount = 0;
 let selectedName = "";
 const noBtn = document.getElementById("noBtn");
 const anchor = document.getElementById("noAnchor");
@@ -90,6 +91,7 @@ function placeNo() {
 function updatePosition() {
     noBtn.style.left = pos.x + "px";
     noBtn.style.top = pos.y + "px";
+    noBtn.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
 }
 
 /* ========== ANIMATION LOOP ========== */
@@ -120,6 +122,15 @@ function animate() {
 
 /* ========== REPEL LOGIC ========== */
 function repel(e) {
+    // Track NO attempts (limit to avoid spam)
+    if (window.gtag && noAttemptCount < 3) {
+      gtag('event', 'no_attempted', {
+        event_category: 'engagement',
+        event_label: selectedName || 'unknown'
+      });
+      noAttemptCount++;
+    }
+
     const rect = noBtn.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
@@ -143,9 +154,32 @@ function repel(e) {
 /* ========== EVENTS ========== */
 document.addEventListener("mousemove", repel);
 noBtn.addEventListener("touchstart", e => {
-    e.preventDefault();
-    vibrateTiny();        // 📳 User gesture = vibration allowed
-    repel(e.touches[0]);
+  e.preventDefault();
+  vibrateTiny();
+
+  const padding = 40;
+  const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+  const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+  pos.x = Math.random() * maxX;
+  pos.y = Math.random() * maxY;
+
+  updatePosition();
+  noBtn.animate(
+    [
+      { transform: "scale(1)" },
+      { transform: "scale(1.2)" },
+      { transform: "scale(1)" }
+    ],
+    { duration: 300 }
+  );
+  // Track mobile NO attempt
+  if (window.gtag) {
+    gtag('event', 'no_attempted_mobile', {
+      event_category: 'engagement',
+      event_label: selectedName || 'unknown'
+    });
+  }
 });
 noBtn.addEventListener("click", repel);
 
@@ -219,7 +253,7 @@ function checkPhase() {
     }
 }
 function getShareText(name) {
-  return `${name} said YES :)\nSome moments deserve to be shared.`;
+  return `${name} said YES!!\nSome moments deserve to be shared.`;
 }
 /* ========== YES SCREEN ========== */
 /* ========== YES SCREEN ========== */
