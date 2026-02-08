@@ -598,6 +598,13 @@ function showLove() {
             <img src="https://i.pinimg.com/736x/84/e4/41/84e441da2d9116813141b6be0f99b6ab.jpg" alt="Romantic Moment">
         </div>
     `;
+    if (window.gtag) {
+      gtag('event', 'valentine_yes', {
+        event_category: 'engagement',
+        event_label: name
+      });
+    }
+
 }
 
 /* ========== SPARKLES ========== */
